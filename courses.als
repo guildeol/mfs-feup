@@ -59,7 +59,7 @@ pred inv5 {
 
 pred inv6 {
 	// Students only work on projects of courses they are enrolled in
- 
+	all s:Student, p:Project | s -> p in projects implies (some c:Course | s -> c in enrolled and c -> p in projects)
 }
 
 

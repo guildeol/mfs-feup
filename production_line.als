@@ -98,6 +98,7 @@ pred inv9 {
   // The workstations form a single line between begin and end
   all w:Workstation - end | one w.succ // All workstations except end have a succ
   no end.succ
+  
   Workstation in begin.*succ
 }
 

@@ -19,16 +19,16 @@ sig Day {}
 // when specifying each property you can assume all the previous ones to be true
 
 pred inv1 {
-	// Every image is posted be one user
-	// all p:Photo, u1, u2:User | u1 -> p in posts and u2 -> p in posts implies u1 = u2
-	// all p:Photo | some u:User | u -> p in posts
+  // Every image is posted be one user
+  // all p:Photo, u1, u2:User | u1 -> p in posts and u2 -> p in posts implies u1 = u2
+  // all p:Photo | some u:User | u -> p in posts
   posts in User one -> Photo
 }
 
 
 pred inv2 {
 	// An user cannot follow itself.
-  // all u1, u2:User | u1 -> u2 in follows implies u1 != u2
+  	// all u1, u2:User | u1 -> u2 in follows implies u1 != u2
 	all u:User | u -> u not in follows
 }
 
