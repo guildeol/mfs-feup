@@ -95,6 +95,10 @@ method Main()
     var l2 := Cons(true, Cons(false, Cons(false, Nil)));
     print "Length of list is ", length(l2), "\n";
 
+    print del(1, l1), "\n";
+    print del(2, l1), "\n";
+    print del(3, l1), "\n";
+    print elem(3, del(3, l1)), "\n";
 }
 
 //////////////////////////////////////////////////////////
@@ -105,7 +109,9 @@ method Main()
 // for all l1, l2 and l3
 //////////////////////////////////////////////////////////
 
-// TODO
+lemma append_associative<T>(l1 :List<T>, l2 :List<T>, l3 :List<T>)
+    ensures append(append(l1, l2), l3) == append(l1, append(l2, l3))
+{}
 
 //////////////////////////////////////////////////////////
 // Exercise 4. Write a lemma that shows that Nil is the 
@@ -117,14 +123,45 @@ method Main()
 // for all l1
 //////////////////////////////////////////////////////////
 
-// TODO
+lemma nil_is_append_neutral<T>(l1: List<T>)
+    ensures append(l1, Nil) == l1
+    ensures append(Nil, l1) == l1
+{}
 
 //////////////////////////////////////////////////////////
 // Exercise 5. Define a function reverse that reverses
 // a list
 //////////////////////////////////////////////////////////
 
-// TODO
+function method reverse<T>(list: List<T>): List<T>
+  decreases list
+{  
+    match list
+        case Nil => Nil
+        case Cons(h, Nil) => Cons(h, Nil)
+        case Cons(h, t) => append(reverse(t), Cons(h, Nil))
+}
+
+method test_reverse()
+{
+    // Usual reversal
+    var l1 := Cons(1, Cons(2, Cons(3, Nil)));
+    var l2 := Cons(3, Cons(2, Cons(1, Nil)));
+
+    assert reverse(l1) == l2;
+
+    // Reverse list with 1 element
+    l1 := Cons(1, Nil);
+    l2 := Cons(1, Nil);
+
+    assert reverse(l1) == l2;
+
+    // Reverse empty list
+    l1 := Nil;
+    l2 := Nil;
+
+    assert reverse(l1) == l2;
+}
 
 //////////////////////////////////////////////////////////
 // Exercise 6. Show that 
@@ -138,7 +175,26 @@ method Main()
 // help writing it on paper first.
 //////////////////////////////////////////////////////////
 
-// TODO
+// lemma reverse_append<T>(l1: List<T>, l2: List<T>)
+//     decreases l1
+//     ensures reverse(append(l1, l2)) == append(reverse(l2), reverse(l1))
+// {
+//     match l1
+//         case Nil =>
+//             calc
+//             {
+//                 reverse(append(Nil, l2));
+//                 == 
+//                 append(reverse(l2), Nil);
+//             }
+//         case Cons(h, t) => 
+//             calc 
+//             {
+//                 reverse(append(l2, l1));
+//                 ==
+//                 append(reverse(l2), reverse(l1));
+//             }
+// }
 
 //////////////////////////////////////////////////////////
 // Exercise 7. Use the previous lemma to show that 
@@ -150,8 +206,6 @@ method Main()
 //////////////////////////////////////////////////////////
 
 // TODO
-
-
 
 //////////////////////////////////////////////////////////
 // Exercise 8. Define a function
@@ -169,7 +223,31 @@ method Main()
 // as lemmas.
 //////////////////////////////////////////////////////////
 
-// TODO
+function method del<T(==)>(value: T, l: List<T>): List<T>
+    decreases l
+{
+    match l
+        case Nil => 
+            Nil
+        case Cons(h, Nil) =>
+            if value == h then
+                Nil
+            else
+                Cons(h, Nil)
+        case Cons(h, t) => 
+            if value == h then
+                Cons(t.head, t.tail)
+            else
+                append(Cons(h, Nil), del(value, t))
+}
+
+// lemma absence_implies_deletion<T>(l: List<T>)
+//     ensures forall v: T, l :: !elem(v, l) ==> del(v, l) == l
+// {}
+
+// lemma deletion_removes<T>(l: List<T>)
+//     ensures forall v: T, l :: !elem(v, del(v, l))
+// {}
 
 //////////////////////////////////////////////////////////
 // Exercise 9. Define a similar function to the above
